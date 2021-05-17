@@ -17,9 +17,9 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class MessagesController {
 
-    @GET
-    @Operation(summary = "Get a list of all messages.")
-    public List<Object> list() {
-        return Collections.emptyList();
-    }
+  @GET
+  @Operation(summary = "Get a list of all messages.")
+  public List<Object> list() {
+    return Collections.emptyList();
+  }
 }

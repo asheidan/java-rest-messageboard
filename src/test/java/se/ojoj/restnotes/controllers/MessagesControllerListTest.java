@@ -9,12 +9,12 @@ import static org.hamcrest.CoreMatchers.is;
 @QuarkusTest
 public class MessagesControllerListTest {
 
-    @Test
-    public void testListEndpointShouldReturnOK() {
-        given()
-          .when().get("/messages")
-          .then()
-             .statusCode(200);
-    }
+  @Test
+  public void testListEndpointShouldReturnOK() {
+    given()
+        .when().get("/messages")
+        .then()
+        .statusCode(200);
+  }
 
 }
