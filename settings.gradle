@@ -9,3 +9,5 @@ pluginManagement {
     }
 }
 rootProject.name='rest-messageboard'
+include 'integration-test'
+

@@ -8,14 +8,43 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    unitTest {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+            srcDir file('src/unit-test/java')
+        }
+        resources.srcDir file('src/unit-test/resources')
+    }
+}
+
+// Marking integration-test as test in IntelliJ
+apply plugin: 'idea'
+idea.module {
+    testSourceDirs += sourceSets.unitTest.java.srcDirs
+    inheritOutputDirs = false
+    outputDir = compileJava.destinationDir
+    testOutputDir = compileTestJava.destinationDir
+}
+
+configurations {
+    unitTestCompile.extendsFrom testCompile
+    unitTestRuntime.extendsFrom testRuntime
+    unitTestImplementation.extendsFrom testImplementation
+}
+
 dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-arc'
+
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
+
+    unitTestImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 group 'se.ojoj'
@@ -34,3 +63,16 @@ compileJava {
 compileTestJava {
     options.encoding = 'UTF-8'
 }
+
+compileUnitTestJava {
+    options.encoding = 'UTF-8'
+}
+
+task unitTest(type: Test) {
+    group 'verification'
+    testClassesDirs = sourceSets.unitTest.output.classesDirs
+    classpath = sourceSets.unitTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+}
+check.dependsOn unitTest
+test.mustRunAfter unitTest
