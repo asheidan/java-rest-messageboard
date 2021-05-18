@@ -35,6 +35,8 @@ configurations {
 }
 
 dependencies {
+    implementation 'io.quarkus:quarkus-jdbc-h2'
+    implementation 'io.quarkus:quarkus-hibernate-orm-panache'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
@@ -42,9 +44,11 @@ dependencies {
     implementation 'io.quarkus:quarkus-arc'
 
     testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.quarkus:quarkus-panache-mock'
     testImplementation 'io.rest-assured:rest-assured'
 
-    unitTestImplementation 'org.junit.jupiter:junit-jupiter'
+    unitTestImplementation 'io.quarkus:quarkus-junit5'
+    unitTestImplementation 'io.quarkus:quarkus-panache-mock'
 }
 
 group 'se.ojoj'
