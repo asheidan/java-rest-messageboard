@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import java.time.ZonedDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Entity
@@ -15,8 +18,11 @@ public class Message extends PanacheEntity {
   @Schema(description = "The timestamp associated with the message.")
   public ZonedDateTime timestamp;
 
-  @Schema(description = "The content of the message.")
+  @Schema(description = "The content of the message.", example = "Lorem ipsum doler sit amet.")
   @NotBlank(message = "Body may not be blank.")
   public String body;
+
+  @ManyToOne
+  public Client client;
 
 }

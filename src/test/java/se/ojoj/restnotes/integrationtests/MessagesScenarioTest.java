@@ -2,11 +2,11 @@ package se.ojoj.restnotes.integrationtests;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.with;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
@@ -33,6 +33,7 @@ public class MessagesScenarioTest {
 
   @Test
   @TestTransaction
+  @TestSecurity(user = "user", roles = "client")
   public void testPostedMessageShouldBeReturned() {
     String createResult = with()
         .contentType(ContentType.JSON)
