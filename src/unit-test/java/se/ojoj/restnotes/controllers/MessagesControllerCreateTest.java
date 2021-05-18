@@ -36,6 +36,21 @@ public class MessagesControllerCreateTest {
 
   @Test
   @TestTransaction
+  public void testRemovedUserShouldRaiseException() {
+    // Given
+    setupIdentity("removedUser", "client", false);
+
+    Message postBody = new Message();
+    postBody.body = "Foo!";
+
+    // When / Then
+    Assertions.assertThrows(
+        ForbiddenException.class,
+        () -> controller.create(postBody));
+
+  }
+  @Test
+  @TestTransaction
   public void testMessageShouldReceiveTimestamp() {
     // Given
     setupIdentity("user", "client");
@@ -67,6 +82,10 @@ public class MessagesControllerCreateTest {
   }
 
   private Client setupIdentity(String username, String role) {
+    return setupIdentity(username, role, true);
+  }
+
+  private Client setupIdentity(String username, String role, boolean createUser) {
     Mockito.when(identity.isAnonymous()).thenReturn(false);
 
     Mockito.when(identity.hasRole(role)).thenReturn(true);
@@ -76,8 +95,11 @@ public class MessagesControllerCreateTest {
 
     Mockito.when(identity.getPrincipal()).thenReturn(mockedPrincipal);
 
-    return null;
+    if (! createUser) {
 
-    //return Client.add(username, "", role);
+      return null;
+    }
+
+    return Client.add(username, "", role);
   }
 }

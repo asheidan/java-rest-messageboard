@@ -28,7 +28,7 @@ public class Client extends PanacheEntity {
   @Password
   @Schema(required = true)
   @NotBlank(message = "Password may not be blank.")
-  @JsonIgnore
+  @JsonIgnore  // Don't serialize this field (check annotations on getter/setter)
   public String password;
 
   @Roles
@@ -50,6 +50,7 @@ public class Client extends PanacheEntity {
     }
     catch (PersistenceException persistenceException) {
       // TODO: Make sure that the exception is actually due to this error before throwing.
+      // TODO: Replace exception with Client-specific exception or move to controller.
       throw new BadRequestException("Username already taken.");
     }
 

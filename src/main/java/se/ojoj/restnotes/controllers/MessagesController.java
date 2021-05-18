@@ -1,5 +1,6 @@
 package se.ojoj.restnotes.controllers;
 
+import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.identity.SecurityIdentity;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -39,6 +40,7 @@ public class MessagesController {
   @GET
   @Operation(summary = "Get a list of all messages.")
   public List<Message> list() {
+    // TODO: Add pagination
     return Message.listAll();
   }
 
@@ -52,6 +54,9 @@ public class MessagesController {
     }
 
     Client client = Client.findByUsername(identity.getPrincipal().getName());
+    if (null == client) {
+      throw new ForbiddenException("You do not exist.");
+    }
     message.client = client;
 
     message.persistAndFlush();
