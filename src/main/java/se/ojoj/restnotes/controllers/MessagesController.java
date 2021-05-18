@@ -1,8 +1,12 @@
 package se.ojoj.restnotes.controllers;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -20,5 +24,18 @@ public class MessagesController {
   @Operation(summary = "Get a list of all messages.")
   public List<Message> list() {
     return Message.listAll();
+  }
+
+  @POST
+  @Operation(summary = "Post a new message.")
+  @Transactional
+  public Message create(@Valid Message message) {
+    if (null == message.timestamp) {
+      message.timestamp = ZonedDateTime.now();
+    }
+
+    message.persistAndFlush();
+
+    return message;
   }
 }

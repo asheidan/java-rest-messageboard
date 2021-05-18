@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import java.time.ZonedDateTime;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotBlank;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Entity
@@ -15,6 +16,7 @@ public class Message extends PanacheEntity {
   public ZonedDateTime timestamp;
 
   @Schema(description = "The content of the message.")
+  @NotBlank(message = "Body may not be blank.")
   public String body;
 
 }
