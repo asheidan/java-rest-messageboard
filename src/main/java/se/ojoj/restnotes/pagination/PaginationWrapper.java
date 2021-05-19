@@ -1,13 +1,15 @@
-package se.ojoj.restnotes.se.ojoj.restnotes.pagination;
+package se.ojoj.restnotes.pagination;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @JsonInclude(Include.NON_NULL)
 public class PaginationWrapper<T> {
 
+  @JsonProperty(value = "items")
   public List<T> page;
 
   @Schema(example = "1")

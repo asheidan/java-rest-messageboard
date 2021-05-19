@@ -1,19 +1,16 @@
 package se.ojoj.restnotes.controllers;
 
-import io.quarkus.panache.mock.PanacheMock;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import java.util.Collections;
-import java.util.List;
 import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import se.ojoj.restnotes.models.Client;
 import se.ojoj.restnotes.models.Message;
-import se.ojoj.restnotes.se.ojoj.restnotes.pagination.PaginationWrapper;
+import se.ojoj.restnotes.pagination.PaginationWrapper;
 
 @QuarkusTest
 public class MessagesControllerListTest extends MessagesControllerBaseTest {

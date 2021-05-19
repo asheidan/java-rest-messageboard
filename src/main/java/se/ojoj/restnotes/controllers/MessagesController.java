@@ -33,7 +33,7 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import se.ojoj.restnotes.models.Client;
 import se.ojoj.restnotes.models.Message;
-import se.ojoj.restnotes.se.ojoj.restnotes.pagination.PaginationWrapper;
+import se.ojoj.restnotes.pagination.PaginationWrapper;
 
 @Path("/messages")
 @Tag(name = "Messages", description = "Operations related to messages")
