@@ -7,14 +7,16 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import java.security.Principal;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import se.ojoj.restnotes.models.Client;
 import se.ojoj.restnotes.models.Message;
 
 @QuarkusTest
-public class MessagesControllerCreateTest {
+public class MessagesControllerCreateTest extends MessagesControllerBaseTest {
   @Inject
   MessagesController controller;
 
@@ -38,7 +40,7 @@ public class MessagesControllerCreateTest {
   @TestTransaction
   public void testRemovedUserShouldRaiseException() {
     // Given
-    setupIdentity("removedUser", "client", false);
+    setupIdentity("removedUser", "client", identity, false);
 
     Message postBody = new Message();
     postBody.body = "Foo!";
@@ -53,7 +55,7 @@ public class MessagesControllerCreateTest {
   @TestTransaction
   public void testMessageShouldReceiveTimestamp() {
     // Given
-    setupIdentity("user", "client");
+    setupIdentity("user", "client", identity);
 
     Message postBody = new Message();
     postBody.body = "Lorem ipsum.";
@@ -69,7 +71,7 @@ public class MessagesControllerCreateTest {
   @TestTransaction
   public void testMessageShouldReceiveId() {
     // Given
-    setupIdentity("testUser", "client");
+    setupIdentity("testUser", "client", identity);
 
     Message postBody = new Message();
     postBody.body = "Lorem ipsum.";
@@ -81,25 +83,21 @@ public class MessagesControllerCreateTest {
     Assertions.assertNotNull(actualResult.id);
   }
 
-  private Client setupIdentity(String username, String role) {
-    return setupIdentity(username, role, true);
-  }
+  @Test
+  @TestTransaction
+  public void testProvidingClientShouldRaiseBadRequest() {
+    // Given
+    setupIdentity("testUser", "client", identity);
 
-  private Client setupIdentity(String username, String role, boolean createUser) {
-    Mockito.when(identity.isAnonymous()).thenReturn(false);
+    Client fakeClient = Client.add("fakeUser", "", "client");
 
-    Mockito.when(identity.hasRole(role)).thenReturn(true);
+    Message postBody = new Message();
+    postBody.body = "Lorem ipsum.";
+    postBody.client = fakeClient;
 
-    Principal mockedPrincipal = Mockito.mock(Principal.class);
-    Mockito.when(mockedPrincipal.getName()).thenReturn(username);
-
-    Mockito.when(identity.getPrincipal()).thenReturn(mockedPrincipal);
-
-    if (! createUser) {
-
-      return null;
-    }
-
-    return Client.add(username, "", role);
+    // When / Then
+    Assertions.assertThrows(
+        BadRequestException.class,
+        () -> controller.create(postBody));
   }
 }

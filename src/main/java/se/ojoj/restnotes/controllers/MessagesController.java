@@ -1,5 +1,6 @@
 package se.ojoj.restnotes.controllers;
 
+import io.quarkus.panache.common.Parameters;
 import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.identity.SecurityIdentity;
 import java.time.ZonedDateTime;
@@ -8,9 +9,12 @@ import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -45,22 +49,76 @@ public class MessagesController {
   }
 
   @POST
+  @RolesAllowed("client")
   @Operation(summary = "Post a new message.")
   @Transactional
-  @RolesAllowed("client")
   public Message create(@Valid Message message) {
-    if (null == message.timestamp) {
-      message.timestamp = ZonedDateTime.now();
-    }
-
     Client client = Client.findByUsername(identity.getPrincipal().getName());
     if (null == client) {
       throw new ForbiddenException("You do not exist.");
     }
+
+    if (null != message.client) {
+      throw new BadRequestException("Client should not be provided when creating new message.");
+    }
+
+    if (null == message.timestamp) {
+      message.timestamp = ZonedDateTime.now();
+    }
+
     message.client = client;
 
     message.persistAndFlush();
 
     return message;
+  }
+
+  @Path("{id}")
+  @POST
+  @RolesAllowed("client")
+  @Operation(summary = "Update one of your existing messages.")
+  @Parameter(name = "id", description = "The id of the message.")
+  @Transactional
+  public Message update(@PathParam Long id, Message message) throws ForbiddenException, NotFoundException {
+    Client client = Client.findByUsername(identity.getPrincipal().getName());
+    if (null == client) {
+      throw new ForbiddenException("You do not exist");
+    }
+
+    Message entity = Message.find("client = :client AND id = :id",
+                                  Parameters.with("client", client)
+                                            .and("id", id))
+        .withLock(LockModeType.PESSIMISTIC_WRITE)
+        .firstResult();
+    if (null == entity) {
+      throw new NotFoundException("No such message belonging to you were found.");
+    }
+
+    entity.body = message.body;
+
+    return entity;
+  }
+
+  @Path("{id}")
+  @DELETE
+  @Operation(summary = "Delete a single message.")
+  @Parameter(name = "id", description = "The id of the message.")
+  @Transactional
+  public void destroy(@PathParam Long id) throws ForbiddenException, NotFoundException {
+    Client client = Client.findByUsername(identity.getPrincipal().getName());
+    if (null == client) {
+      throw new ForbiddenException("You do not exist");
+    }
+
+    long deleteCount = Message.delete("id = :id AND client = :client",
+                                      Parameters.with("id", id).and("client", client));
+    if (0 >= deleteCount) {
+      throw new NotFoundException("No such message belonging to you were found.");
+    }
+  }
+
+
+  private NotFoundException create404(Long id) {
+    return new NotFoundException("No message with id " + id + "found.");
   }
 }
