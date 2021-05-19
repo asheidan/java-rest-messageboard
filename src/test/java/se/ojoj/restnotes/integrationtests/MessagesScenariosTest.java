@@ -10,10 +10,11 @@ import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-public class MessagesScenarioTest {
+public class MessagesScenariosTest {
 
   @Test
   public void testListEndpointShouldReturnOK() {
@@ -32,7 +33,8 @@ public class MessagesScenarioTest {
           .body(is("[]"));
   }
 
-  //@Test  // FIXME: Waiting for test-fixtures for integraion-tests
+  @Disabled("Waiting for test-fixtures for integration-tests")
+  @Test
   @TestTransaction
   @TestSecurity(user = "testUser", roles = "client")
   public void testPostedMessageShouldBeReturned() {
