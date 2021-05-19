@@ -1,0 +1,202 @@
+---
+openapi: 3.0.3
+info:
+  title: Messages API
+  contact:
+    name: Emil Eriksson
+    url: http://ojoj.se
+    email: support@example.com
+  version: 1.0.0-SNAPSHOT
+tags:
+- name: Clients
+  description: Operations related to clients
+- name: Messages
+  description: Operations related to messages
+paths:
+  /clients:
+    post:
+      tags:
+      - Clients
+      summary: Register as a new client.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+  /messages:
+    get:
+      tags:
+      - Messages
+      summary: Get a list of all messages.
+      parameters:
+      - name: limit
+        in: query
+        description: The index of the last message.
+        schema:
+          format: int32
+          default: 25
+          type: integer
+      - name: offset
+        in: query
+        description: "The index of the first message, starting at 0."
+        schema:
+          format: int32
+          default: 0
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginationWrapperMessage'
+    post:
+      tags:
+      - Messages
+      summary: Post a new message.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /messages/{id}:
+    get:
+      tags:
+      - Messages
+      summary: Get a single message.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the message.
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      tags:
+      - Messages
+      summary: Update one of your existing messages.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the message.
+        required: true
+        schema:
+          format: int64
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      tags:
+      - Messages
+      summary: Delete a single message.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the message.
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "204":
+          description: No Content
+components:
+  schemas:
+    Client:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        password:
+          pattern: \S
+          type: string
+          nullable: false
+          writeOnly: true
+        roles:
+          description: Comma-separated list of roles.
+          type: string
+          readOnly: true
+        username:
+          pattern: \S
+          type: string
+          nullable: false
+    Message:
+      required:
+      - body
+      type: object
+      properties:
+        body:
+          description: The content of the message.
+          pattern: \S
+          type: string
+          example: Lorem ipsum doler sit amet.
+          nullable: false
+        id:
+          format: int64
+          description: The unique identifier for the message.
+          type: integer
+          readOnly: true
+        timestamp:
+          format: date-time
+          description: The timestamp associated with the message.
+          type: string
+          readOnly: true
+        author:
+          type: string
+          readOnly: true
+          example: Ernest
+    PaginationWrapperMessage:
+      type: object
+      properties:
+        limit:
+          format: int32
+          type: integer
+          example: 25
+        offset:
+          format: int32
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        total:
+          format: int64
+          type: integer
+          example: 1
+  securitySchemes:
+    Basic Auth:
+      type: http
+      scheme: basic
