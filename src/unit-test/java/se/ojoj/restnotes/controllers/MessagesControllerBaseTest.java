@@ -1,7 +1,6 @@
 package se.ojoj.restnotes.controllers;
 
 import io.quarkus.security.identity.SecurityIdentity;
-import io.quarkus.test.junit.mockito.InjectMock;
 import java.security.Principal;
 import org.mockito.Mockito;
 import se.ojoj.restnotes.models.Client;
