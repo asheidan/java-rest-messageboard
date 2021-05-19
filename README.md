@@ -11,6 +11,26 @@ You can run your application in dev mode that enables live coding using:
 ./gradlew quarkusDev
 ```
 
+To get started with the API you probably want to visit http://localhost:8080/q/swagger-ui/ to get a feeling for what's possible.
+You can also go to http://localhost:8080/, but that is mostly pointless.
+
+But the short of it:
+
+1. Register as a client:
+   ```sh
+   curl -Hcontent-type:application/json http://localhost:8080/clients -d '{"username": "epicuser", "password": "verysecret"}'
+   ```
+   
+2. Post a new message:
+   ```sh
+   curl -Hcontent-type:application/json http://localhost:8080/messages -uepicuser:verysecret -d '{"body": "This is really a very fine message."}'
+   ```
+
+3. List all the messages (You don't actually have to auth for this endpoint):
+   ```sh
+   curl -Hcontent-type:application/json http://localhost:8080/messages -uepicuser:verysecret 
+   ```
+
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
 ## Packaging and running the application
