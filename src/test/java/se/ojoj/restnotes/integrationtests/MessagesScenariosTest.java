@@ -10,6 +10,7 @@ import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import java.util.Collections;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +31,7 @@ public class MessagesScenariosTest {
         .when().get("/messages")
         .then()
           .statusCode(200)
-          .body(is("[]"));
+          .body("items", is(Collections.emptyList()));
   }
 
   @Disabled("Waiting for test-fixtures for integration-tests")
