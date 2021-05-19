@@ -7,12 +7,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import java.time.ZonedDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @JsonInclude(Include.NON_NULL)
@@ -31,6 +33,8 @@ public class Message extends PanacheEntityBase {
 
   @Schema(description = "The content of the message.", example = "Lorem ipsum doler sit amet.")
   @NotBlank(message = "Body may not be blank.")
+  @Length(max = 1024)
+  @Column(length = 1024)
   @JsonProperty(required = true)
   public String body;
 
