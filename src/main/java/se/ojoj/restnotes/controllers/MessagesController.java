@@ -1,5 +1,6 @@
 package se.ojoj.restnotes.controllers;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -28,8 +30,10 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import se.ojoj.restnotes.models.Client;
 import se.ojoj.restnotes.models.Message;
+import se.ojoj.restnotes.se.ojoj.restnotes.pagination.PaginationWrapper;
 
 @Path("/messages")
 @Tag(name = "Messages", description = "Operations related to messages")
@@ -45,9 +49,18 @@ public class MessagesController {
   @GET
   @PermitAll
   @Operation(summary = "Get a list of all messages.")
-  public List<Message> list() {
-    // TODO: Add pagination
-    return Message.listAll();
+  @Parameter(name = "offset", description = "The index of the first message, starting at 0.")
+  @Parameter(name = "limit", description = "The index of the last message.")
+  public PaginationWrapper<Message> list(@QueryParam @DefaultValue("0") int offset,
+                                         @QueryParam @DefaultValue("25") int limit) {
+    PanacheQuery<Message> messageQuery = Message.find("order by timestamp asc");
+    messageQuery.range(offset, offset + limit);
+
+    long count = messageQuery.count();
+
+    List<Message> page = messageQuery.list();
+
+    return new PaginationWrapper<>(page, offset, limit, count);
   }
 
   @POST
@@ -99,6 +112,17 @@ public class MessagesController {
     entity.body = message.body;
 
     return entity;
+  }
+
+  @Path("{id}")
+  @GET
+  @RolesAllowed("client")
+  @Operation(summary = "Get a single message.")
+  @Parameter(name = "id", description = "The id of the message.")
+  public Message show(@PathParam Long id) throws NotFoundException {
+    Optional<Message> maybeMessage = Message.findByIdOptional(id);
+
+    return maybeMessage.orElseThrow(() -> create404(id));
   }
 
   @Path("{id}")

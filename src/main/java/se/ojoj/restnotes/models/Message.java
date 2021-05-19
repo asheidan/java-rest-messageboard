@@ -18,6 +18,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @JsonInclude(Include.NON_NULL)
 public class Message extends PanacheEntityBase {
 
+
   @Id
   @GeneratedValue
   @Schema(description = "The unique identifier for the message.", readOnly = true)
@@ -38,7 +39,7 @@ public class Message extends PanacheEntityBase {
   @JsonIgnore
   public Client client;
 
-  @Schema(readOnly = true)
+  @Schema(readOnly = true, example = "Ernest")
   @JsonProperty(value = "author", access = Access.READ_ONLY)
   public String clientName() {
     return client.username;
