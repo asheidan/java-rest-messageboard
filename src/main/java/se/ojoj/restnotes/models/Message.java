@@ -1,7 +1,9 @@
 package se.ojoj.restnotes.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import java.time.ZonedDateTime;
 import javax.persistence.Entity;
@@ -21,6 +23,17 @@ public class Message extends PanacheEntity {
   public String body;
 
   @ManyToOne
+  @JsonIgnore  // Don't deserialize this field (check annotations on getter/setter)
   public Client client;
+
+  @JsonProperty
+  public Client getClient() {
+    return client;
+  }
+
+  @JsonIgnore
+  public void setClient(Client client) {
+    this.client = client;
+  }
 
 }
