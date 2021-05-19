@@ -1,5 +1,6 @@
 package se.ojoj.restnotes.controllers;
 
+import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
@@ -19,6 +20,20 @@ public class MessagesControllerDestroyTest extends MessagesControllerBaseTest {
 
   @InjectMock
   SecurityIdentity identity;
+
+  @Test
+  @TestTransaction
+  public void testWithoutIdentityShouldRaise () {
+    // Given
+    Message message = new Message();
+    message.body = "Whatever.";
+    message.persist();
+
+    // When / Then
+    Assertions.assertThrows(
+        ForbiddenException.class,
+        () -> controller.destroy(message.id));
+  }
 
   @Test
   @TestTransaction
@@ -54,7 +69,7 @@ public class MessagesControllerDestroyTest extends MessagesControllerBaseTest {
 
   @Test
   @TestTransaction
-  public void testDeletingNormalMessageShouldRemoveMessage () {
+  public void testDeletingNormalMessageShouldNotRaise () {
     // Given
     Client client = setupIdentity("testUser", "client", identity);
 
@@ -63,10 +78,9 @@ public class MessagesControllerDestroyTest extends MessagesControllerBaseTest {
     message.client = client;
     message.persistAndFlush();
 
-    // When
-    controller.destroy(message.id);
+    Long messageId = message.id;
 
-    // Then
-    Assertions.assertNull(Message.findById(message.id));
+    // When / Then
+    controller.destroy(messageId);
   }
 }

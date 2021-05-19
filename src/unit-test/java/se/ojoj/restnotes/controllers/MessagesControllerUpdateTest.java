@@ -37,20 +37,24 @@ public class MessagesControllerUpdateTest extends MessagesControllerBaseTest {
 
   @Test
   @TestTransaction
-  public void testProvidingClientShouldRaiseBadRequest() {
+  public void testUsingRemovedIdentityShouldRaise() {
     // Given
-    setupIdentity("testUser", "client", identity);
+    setupIdentity("testUser", "client", identity, false);
 
-    Client fakeClient = Client.add("fakeUser", "", "client");
+    Client otherClient = Client.add("fakeUser", "", "client");
+
+    Message existingMessage = new Message();
+    existingMessage.body = "Lorem ipsum.";
+    existingMessage.client = otherClient;
+    existingMessage.persistAndFlush();
 
     Message postBody = new Message();
     postBody.body = "Lorem ipsum.";
-    postBody.client = fakeClient;
 
     // When / Then
     Assertions.assertThrows(
-        BadRequestException.class,
-        () -> controller.create(postBody));
+        ForbiddenException.class,
+        () -> controller.update(existingMessage.id, postBody));
   }
 
   @Test
