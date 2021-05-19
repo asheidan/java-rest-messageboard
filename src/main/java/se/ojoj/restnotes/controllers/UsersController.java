@@ -13,8 +13,8 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import se.ojoj.restnotes.models.Client;
 
-@Path("/users")
-@Tag(name = "Users", description = "Operations related to users")
+@Path("/clients")
+@Tag(name = "Clients", description = "Operations related to clients")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UsersController {
