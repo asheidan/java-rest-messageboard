@@ -6,6 +6,7 @@ import io.quarkus.security.identity.SecurityIdentity;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -42,6 +43,7 @@ public class MessagesController {
   SecurityIdentity identity;
 
   @GET
+  @PermitAll
   @Operation(summary = "Get a list of all messages.")
   public List<Message> list() {
     // TODO: Add pagination
@@ -101,6 +103,7 @@ public class MessagesController {
 
   @Path("{id}")
   @DELETE
+  @RolesAllowed("client")
   @Operation(summary = "Delete a single message.")
   @Parameter(name = "id", description = "The id of the message.")
   @Transactional

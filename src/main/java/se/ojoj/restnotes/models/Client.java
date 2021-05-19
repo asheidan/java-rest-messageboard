@@ -2,6 +2,7 @@ package se.ojoj.restnotes.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.security.jpa.Password;
@@ -26,13 +27,14 @@ public class Client extends PanacheEntity {
   public String username;
 
   @Password
-  @Schema(required = true)
+  @Schema(required = true, writeOnly = true)
   @NotBlank(message = "Password may not be blank.")
-  @JsonIgnore  // Don't serialize this field (check annotations on getter/setter)
+  @JsonProperty(access = Access.WRITE_ONLY)
   public String password;
 
   @Roles
-  @Schema(description = "Comma-separated list of roles.")
+  @Schema(description = "Comma-separated list of roles.", readOnly = true)
+  @JsonProperty(access = Access.READ_ONLY)
   public String roles;
 
   public static Client findByUsername(String username) {
@@ -56,15 +58,4 @@ public class Client extends PanacheEntity {
 
     return client;
   }
-
-  @JsonIgnore
-  public String getPassword() {
-    return password;
-  }
-
-  @JsonProperty
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
 }
