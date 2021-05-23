@@ -7,11 +7,14 @@ import se.ojoj.restnotes.models.Client;
 
 public abstract class MessagesControllerBaseTest {
 
-  protected Client setupIdentity(String username, String role, SecurityIdentity identity) {
-    return setupIdentity(username, role, identity,true);
+  protected Client setupIdentity(String username, SecurityIdentity identity) {
+    return setupIdentity(username, identity, true);
   }
 
-  protected Client setupIdentity(String username, String role, SecurityIdentity identity, boolean createUser) {
+  protected Client setupIdentity(String username, SecurityIdentity identity,
+      boolean createUser) {
+    final String role = "client";
+
     Mockito.when(identity.isAnonymous()).thenReturn(false);
 
     Mockito.when(identity.hasRole(role)).thenReturn(true);

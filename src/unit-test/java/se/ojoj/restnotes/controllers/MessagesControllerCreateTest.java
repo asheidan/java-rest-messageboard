@@ -14,6 +14,7 @@ import se.ojoj.restnotes.models.Message;
 
 @QuarkusTest
 public class MessagesControllerCreateTest extends MessagesControllerBaseTest {
+
   @Inject
   MessagesController controller;
 
@@ -37,7 +38,7 @@ public class MessagesControllerCreateTest extends MessagesControllerBaseTest {
   @TestTransaction
   public void testRemovedUserShouldRaiseException() {
     // Given
-    setupIdentity("removedUser", "client", identity, false);
+    setupIdentity("removedUser", identity, false);
 
     Message postBody = new Message();
     postBody.body = "Foo!";
@@ -48,11 +49,12 @@ public class MessagesControllerCreateTest extends MessagesControllerBaseTest {
         () -> controller.create(postBody));
 
   }
+
   @Test
   @TestTransaction
   public void testMessageShouldReceiveTimestamp() {
     // Given
-    setupIdentity("user", "client", identity);
+    setupIdentity("user", identity);
 
     Message postBody = new Message();
     postBody.body = "Lorem ipsum.";
@@ -68,7 +70,7 @@ public class MessagesControllerCreateTest extends MessagesControllerBaseTest {
   @TestTransaction
   public void testMessageShouldReceiveId() {
     // Given
-    setupIdentity("testUser", "client", identity);
+    setupIdentity("testUser", identity);
 
     Message postBody = new Message();
     postBody.body = "Lorem ipsum.";
@@ -84,7 +86,7 @@ public class MessagesControllerCreateTest extends MessagesControllerBaseTest {
   @TestTransaction
   public void testProvidingClientShouldRaiseBadRequest() {
     // Given
-    setupIdentity("testUser", "client", identity);
+    setupIdentity("testUser", identity);
 
     Client fakeClient = Client.add("fakeUser", "", "client");
 

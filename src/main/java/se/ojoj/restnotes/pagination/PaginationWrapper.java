@@ -40,7 +40,7 @@ public class PaginationWrapper<T> {
       return false;
     }
 
-    PaginationWrapper wrapper = (PaginationWrapper) o;
+    PaginationWrapper<Object> wrapper = (PaginationWrapper<Object>) o;
 
     return offset == wrapper.offset
         && limit == wrapper.limit

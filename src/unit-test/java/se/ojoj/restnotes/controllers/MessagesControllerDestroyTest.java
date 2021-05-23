@@ -23,7 +23,7 @@ public class MessagesControllerDestroyTest extends MessagesControllerBaseTest {
 
   @Test
   @TestTransaction
-  public void testWithoutIdentityShouldRaise () {
+  public void testWithoutIdentityShouldRaise() {
     // Given
     Message message = new Message();
     message.body = "Whatever.";
@@ -37,9 +37,9 @@ public class MessagesControllerDestroyTest extends MessagesControllerBaseTest {
 
   @Test
   @TestTransaction
-  public void testDeletingNonexistantMessageShouldRaise () {
+  public void testDeletingNonexistantMessageShouldRaise() {
     // Given
-    setupIdentity("testUser", "client", identity);
+    setupIdentity("testUser", identity);
 
     // When / Then
     Assertions.assertThrows(
@@ -49,9 +49,9 @@ public class MessagesControllerDestroyTest extends MessagesControllerBaseTest {
 
   @Test
   @TestTransaction
-  public void testDeletingOtherClientsMessageShouldRaise () {
+  public void testDeletingOtherClientsMessageShouldRaise() {
     // Given
-    setupIdentity("testUser", "client", identity);
+    setupIdentity("testUser", identity);
 
     Client otherClient = Client.add("otherUser", "", "client");
 
@@ -69,9 +69,9 @@ public class MessagesControllerDestroyTest extends MessagesControllerBaseTest {
 
   @Test
   @TestTransaction
-  public void testDeletingNormalMessageShouldNotRaise () {
+  public void testDeletingNormalMessageShouldNotRaise() {
     // Given
-    Client client = setupIdentity("testUser", "client", identity);
+    Client client = setupIdentity("testUser", identity);
 
     Message message = new Message();
     message.body = "Not important body.";

@@ -28,10 +28,10 @@ public class MessagesControllerListTest extends MessagesControllerBaseTest {
     //Mockito.when(Message.listAll()).thenReturn(Collections.emptyList());
 
     // When
-    PaginationWrapper actualResult = controller.list(0, 25);
+    PaginationWrapper<Message> actualResult = controller.list(0, 25);
 
     // Then
-    PaginationWrapper expectedResult = new PaginationWrapper(Collections.emptyList(), 0, 25, 0);
+    PaginationWrapper<Message> expectedResult = new PaginationWrapper<Message>(Collections.emptyList(), 0, 25, 0);
     Assertions.assertEquals(expectedResult, actualResult);
   }
 
@@ -39,7 +39,7 @@ public class MessagesControllerListTest extends MessagesControllerBaseTest {
   @TestTransaction
   public void testFirstMessageShouldBeOnFirstPage() {
     // Given
-    Client client = setupIdentity("testUser", "client", identity);
+    Client client = setupIdentity("testUser", identity);
 
     Message message = new Message();
     message.body = "Run, you foo!";
@@ -59,7 +59,7 @@ public class MessagesControllerListTest extends MessagesControllerBaseTest {
   @TestTransaction
   public void testPaginationOffsetShouldExclude() {
     // Given
-    Client client = setupIdentity("testUser", "client", identity);
+    Client client = setupIdentity("testUser", identity);
 
     Message message = new Message();
     message.body = "Run, you bar!";

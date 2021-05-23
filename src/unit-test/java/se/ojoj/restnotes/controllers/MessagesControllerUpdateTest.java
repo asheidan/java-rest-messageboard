@@ -38,7 +38,7 @@ public class MessagesControllerUpdateTest extends MessagesControllerBaseTest {
   @TestTransaction
   public void testUsingRemovedIdentityShouldRaise() {
     // Given
-    setupIdentity("testUser", "client", identity, false);
+    setupIdentity("testUser", identity, false);
 
     Client otherClient = Client.add("fakeUser", "", "client");
 
@@ -60,7 +60,7 @@ public class MessagesControllerUpdateTest extends MessagesControllerBaseTest {
   @TestTransaction
   public void testUpdatingAnotherClientMessageShouldRaise() {
     // Given
-    setupIdentity("testUser", "client", identity);
+    setupIdentity("testUser", identity);
 
     Client otherClient = Client.add("otherUser", "", "client");
     Message otherMessage = new Message();
@@ -81,7 +81,7 @@ public class MessagesControllerUpdateTest extends MessagesControllerBaseTest {
   @TestTransaction
   public void testClientUpdatingTheirOwnMessageShouldUpdateMessage() {
     // Given
-    Client client = setupIdentity("testUser", "client", identity);
+    Client client = setupIdentity("testUser", identity);
 
     Message existingMessage = new Message();
     existingMessage.body = "Not very interesting message.";
